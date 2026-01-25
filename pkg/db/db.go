@@ -40,7 +40,7 @@ func Init(dbFile string) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+
 	if install {
 		_, err = db.Exec(schema)
 		if err != nil {
@@ -49,4 +49,8 @@ func Init(dbFile string) error {
 
 	}
 	return nil
+}
+
+func CloseDb() {
+	db.Close()
 }

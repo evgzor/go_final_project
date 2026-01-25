@@ -2,38 +2,29 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"os"
 
 	"github.com/evgzor/go_final_project/pkg/db"
+	"github.com/evgzor/go_final_project/pkg/server"
+	"github.com/joho/godotenv"
 )
 
-const webDir = "./web"
-
-var port = os.Getenv("TODO_PORT")
+const DB_FILE_NAME = "scheduler.db"
 
 // func mainHandle(w http.ResponseWriter, req *http.Request) {
 // 	io.WriteString(w, "answer")
 // }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	err := db.Init("scheduler.db")
+	err = db.Init(DB_FILE_NAME)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
 
-	if port == "" {
-		port = "7540"
-	}
-
-	port = ":" + port
-
-	http.Handle("/", http.FileServer(http.Dir(webDir)))
-	err = http.ListenAndServe(port, nil)
-	if err != nil {
-		fmt.Println(err)
-		panic(err)
-	}
+	server.Run()
 }
