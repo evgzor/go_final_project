@@ -12,14 +12,13 @@ func Init() {
 }
 
 func writeJson(w http.ResponseWriter, data any) {
-	resp, err := json.Marshal((data))
+	resp, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Write(resp)
-
 }
 
 func writeJsonError(w http.ResponseWriter, error error) {

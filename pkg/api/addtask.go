@@ -31,7 +31,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	if task.Title == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		writeJsonError(w, errors.New("title is reqired"))
+		writeJsonError(w, errors.New("title is required"))
 		return
 	}
 

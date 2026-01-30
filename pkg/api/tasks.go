@@ -15,7 +15,7 @@ type TasksResp struct {
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusMethodNotAllowed)
 		writeJsonError(w, errors.New("Only Get supports"))
 		return
 	}
@@ -29,7 +29,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 			writeJsonError(w, err)
 			return
 		}
-		writeJson(w, TasksResp{
+		writeJson(w, TasksResp {
 			Tasks: tasks,
 		})
 	case isDate(search):
