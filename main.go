@@ -27,4 +27,6 @@ func main() {
 	}
 
 	server.Run()
+
+	defer db.CloseDb()
 }
