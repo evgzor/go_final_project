@@ -74,10 +74,17 @@ func validate(task db.Task) error {
 			return errors.New("Wrong format data for year")
 		}
 		if len(rules) > 1 {
+			digits := strings.Split(rules[1], ",")
 
-			_, err := strconv.Atoi(rules[1])
-			if err != nil {
-				return fmt.Errorf("Wrong format data for %v", symbol)
+			if len(digits) < 1 {
+				return errors.New("Its not a digits")
+			}
+
+			for _, digit := range digits {
+				_, err := strconv.Atoi(digit)
+				if err != nil {
+					return fmt.Errorf("Its not a dijit %s", digit)
+				}
 			}
 		}
 	}
