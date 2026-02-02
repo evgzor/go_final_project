@@ -56,6 +56,28 @@ func UpdateTask(task *Task) error {
 	return nil
 }
 
+func UpdateDate(next string, id string) error {
+	query := `UPDATE scheduler SET date = :date WHERE id = :id`
+	res, err := db.Exec(query,
+		sql.Named("date", next),
+		sql.Named("id", id),
+	)
+
+	if err != nil {
+		return err
+	}
+	// метод RowsAffected() возвращает количество записей к которым
+	// был применена SQL команда
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return fmt.Errorf(`incorrect id for updating task`)
+	}
+	return nil
+}
+
 func AddTask(task *Task) (int64, error) {
 	var id int64
 
@@ -116,6 +138,23 @@ func SearchByDateTasks(date string, limit int) ([]*Task, error) {
 	defer rows.Close()
 
 	return processData(rows)
+}
+
+func DeleteTask(id string) error {
+	query := `DELETE FROM scheduler WHERE id = :id`
+
+	res, err := db.Exec(query, sql.Named("id", id))
+	if err != nil {
+		return err
+	}
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if count == 0 {
+		return fmt.Errorf(`incorrect id for deleting task`)
+	}
+	return nil
 }
 
 func processData(rows *sql.Rows) ([]*Task, error) {

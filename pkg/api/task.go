@@ -13,7 +13,7 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodPut:
 		UpdateTaskHandler(w, r)
 	case http.MethodDelete:
-		panic("")
+		DeleteTaskHandler(w, r)
 	}
 
 }

@@ -15,14 +15,14 @@ import (
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 	var buf bytes.Buffer
-	// читаем тело запроса
+
 	_, err := buf.ReadFrom(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	// десериализуем JSON в db
+
 	if err = json.Unmarshal(buf.Bytes(), &task); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		writeJsonError(w, err)
