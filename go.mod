@@ -8,6 +8,8 @@ require (
 	modernc.org/sqlite v1.44.3
 )
 
+require github.com/golang-jwt/jwt/v5 v5.3.1
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
