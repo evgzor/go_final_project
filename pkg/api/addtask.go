@@ -12,6 +12,16 @@ import (
 	"github.com/evgzor/go_final_project/pkg/db"
 )
 
+// addTaskHandler godoc
+// @Summary      Создание новой задачи
+// @Description  Добавляет новую задачу в систему. Если дата не указана — используется текущая.
+// @Tags         tasks
+// @Accept       json
+// @Produce      json
+// @Param        task  body      db.Task  true  "Данные задачи"
+// @Success      200   {object}  map[string]string  "ID созданной задачи"
+// @Failure      400   {object}  map[string]string  "Ошибка валидации или запроса"
+// @Router       /tasks [post]
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task db.Task
 	var buf bytes.Buffer

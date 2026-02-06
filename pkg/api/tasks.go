@@ -12,6 +12,14 @@ type TasksResp struct {
 	Tasks []*db.Task `json:"tasks"`
 }
 
+// tasksHandler godoc
+// @Summary      Получить список задач
+// @Tags         tasks
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Success      200  {array}   db.Task
+// @Failure      401  {object}  map[string]string
+// @Router       /api/tasks [get]
 func tasksHandler(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodGet {
@@ -29,7 +37,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 			writeJsonError(w, err)
 			return
 		}
-		writeJson(w, TasksResp {
+		writeJson(w, TasksResp{
 			Tasks: tasks,
 		})
 	case isDate(search):

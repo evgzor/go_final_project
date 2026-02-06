@@ -10,13 +10,22 @@ import (
 
 const webDir = "./web"
 
+const defaultPort = "7540"
+
 const TODO_PORT = "TODO_PORT"
 
+// Run запускает HTTP-сервер приложения.
+//
+// Сервер:
+//   - читает порт из переменной окружения TODO_PORT
+//   - использует defaultPort, если переменная не задана
+//   - инициализирует API
+//   - раздаёт статические файлы из webDir
 func Run() {
 	port := os.Getenv(TODO_PORT)
 
 	if port == "" {
-		port = "7540"
+		port = defaultPort
 	}
 
 	port = ":" + port

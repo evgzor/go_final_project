@@ -23,6 +23,26 @@ func lastDayOfMonth(t time.Time) int {
 	).Day()
 }
 
+// NextDate вычисляет следующую дату выполнения задачи
+//
+// Параметры:
+//
+//	now     — текущий момент времени
+//	dstart  — начальная дата в формате YYYYMMDD
+//	repeat  — правило повторения
+//
+// Поддерживаемые правила repeat:
+//
+//	y               — ежегодно
+//	d N             — каждые N дней (1–400)
+//	w D1,D2,...     — по дням недели (1–7, где 1 — понедельник)
+//	m D1,D2... [M]  — по дням месяца, опционально с месяцами
+//	                  D: 1–31, -1 (последний), -2 (предпоследний)
+//	                  M: 1–12
+//
+// Возвращает:
+//
+//	дату в формате YYYYMMDD или ошибку
 func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 
 	date, err := time.Parse("20060102", dstart)
@@ -174,6 +194,14 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	return resultDate, nil
 }
 
+// nextDayHandler godoc
+// @Summary      Рассчитать следующую дату
+// @Description  Возвращает следующую дату с учетом правил повторения
+// @Tags         utils
+// @Produce      json
+// @Success      200  {object}  map[string]string
+// @Failure      400  {object}  map[string]string
+// @Router       /api/nextdate [get]
 func nextDayHandler(w http.ResponseWriter, r *http.Request) {
 	now := r.URL.Query().Get("now")
 	var nowDate time.Time

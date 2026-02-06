@@ -10,10 +10,6 @@ import (
 
 const DB_FILE_NAME = "scheduler.db"
 
-// func mainHandle(w http.ResponseWriter, req *http.Request) {
-// 	io.WriteString(w, "answer")
-// }
-
 func main() {
 	err := godotenv.Load()
 	if err != nil {

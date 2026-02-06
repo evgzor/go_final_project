@@ -16,6 +16,9 @@ type Task struct {
 
 const MaxItems = 50
 
+// GetTask возвращает задачу по её ID.
+//
+// Возвращает ошибку, если задача не найдена или произошла ошибка БД.
 func GetTask(id string) (*Task, error) {
 	row := db.QueryRow(`SELECT id, date, title, comment, repeat FROM scheduler WHERE id = :id`, sql.Named("id", id))
 
@@ -30,6 +33,9 @@ func GetTask(id string) (*Task, error) {
 	return &task, nil
 }
 
+// UpdateTask обновляет данные задачи по её ID.
+//
+// Возвращает ошибку, если задача с таким ID не существует.
 func UpdateTask(task *Task) error {
 	// параметры пропущены, не забудьте указать WHERE
 	query := `UPDATE scheduler SET date = :date, title = :title, comment = :comment, repeat = :repeat WHERE id = :id`
@@ -44,8 +50,6 @@ func UpdateTask(task *Task) error {
 	if err != nil {
 		return err
 	}
-	// метод RowsAffected() возвращает количество записей к которым
-	// был применена SQL команда
 	count, err := res.RowsAffected()
 	if err != nil {
 		return err
@@ -56,6 +60,7 @@ func UpdateTask(task *Task) error {
 	return nil
 }
 
+// UpdateDate обновляет только дату выполнения задачи.
 func UpdateDate(next string, id string) error {
 	query := `UPDATE scheduler SET date = :date WHERE id = :id`
 	res, err := db.Exec(query,
@@ -66,8 +71,7 @@ func UpdateDate(next string, id string) error {
 	if err != nil {
 		return err
 	}
-	// метод RowsAffected() возвращает количество записей к которым
-	// был применена SQL команда
+
 	count, err := res.RowsAffected()
 	if err != nil {
 		return err
@@ -78,6 +82,9 @@ func UpdateDate(next string, id string) error {
 	return nil
 }
 
+// AddTask добавляет новую задачу в базу данных.
+//
+// Возвращает ID созданной задачи.
 func AddTask(task *Task) (int64, error) {
 	var id int64
 
@@ -94,6 +101,9 @@ func AddTask(task *Task) (int64, error) {
 	return id, err
 }
 
+// Tasks возвращает список задач, отсортированных по дате.
+//
+// limit ограничивает количество возвращаемых записей.
 func Tasks(limit int) ([]*Task, error) {
 	rows, err := db.Query(fmt.Sprintf("SELECT id, date, title, comment, repeat FROM scheduler ORDER BY date LIMIT %d", limit))
 	if err != nil {
@@ -105,6 +115,7 @@ func Tasks(limit int) ([]*Task, error) {
 	return processData(rows)
 }
 
+// SearchByStringTasks ищет задачи по вхождению строки в title или comment.
 func SearchByStringTasks(search string, limit int) ([]*Task, error) {
 	searchPattern := "%" + search + "%"
 
@@ -121,6 +132,9 @@ func SearchByStringTasks(search string, limit int) ([]*Task, error) {
 
 }
 
+// SearchByDateTasks возвращает задачи на конкретную дату.
+//
+// date должен быть в формате YYYYMMDD.
 func SearchByDateTasks(date string, limit int) ([]*Task, error) {
 
 	_, err := time.Parse("20060102", date)
@@ -140,6 +154,9 @@ func SearchByDateTasks(date string, limit int) ([]*Task, error) {
 	return processData(rows)
 }
 
+// DeleteTask удаляет задачу по ID.
+//
+// Возвращает ошибку, если задача не найдена.
 func DeleteTask(id string) error {
 	query := `DELETE FROM scheduler WHERE id = :id`
 
@@ -157,6 +174,7 @@ func DeleteTask(id string) error {
 	return nil
 }
 
+// processData преобразует строки результата SQL-запроса в срез задач.
 func processData(rows *sql.Rows) ([]*Task, error) {
 	tasks := make([]*Task, 0)
 	for rows.Next() {

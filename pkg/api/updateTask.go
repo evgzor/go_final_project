@@ -13,6 +13,19 @@ import (
 	"github.com/evgzor/go_final_project/pkg/db"
 )
 
+// UpdateTaskHandler godoc
+// @Summary      Обновить задачу
+// @Description  Обновляет существующую задачу по ID
+// @Tags         tasks
+// @Accept       json
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        task  body      db.Task  true  "Обновлённые данные задачи"
+// @Success      200   {object}  map[string]any  "Задача обновлена"
+// @Failure      400   {object}  map[string]string  "Ошибка валидации"
+// @Failure      401   {object}  map[string]string  "Неавторизован"
+// @Failure      500   {object}  map[string]string  "Внутренняя ошибка"
+// @Router       /api/task [put]
 func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	var task db.Task
@@ -83,7 +96,7 @@ func validate(task db.Task) error {
 			for _, digit := range digits {
 				_, err := strconv.Atoi(digit)
 				if err != nil {
-					return fmt.Errorf("Its not a dijit %s", digit)
+					return fmt.Errorf("Its not a digit %s", digit)
 				}
 			}
 		}

@@ -8,6 +8,18 @@ import (
 	"github.com/evgzor/go_final_project/pkg/db"
 )
 
+// DeleteTaskHandler godoc
+// @Summary      Удалить задачу
+// @Description  Удаляет задачу по ID
+// @Tags         tasks
+// @Produce      json
+// @Security     ApiKeyAuth
+// @Param        id   query     int     true  "ID задачи"
+// @Success      200  {object}  map[string]any  "Задача удалена"
+// @Failure      400  {object}  map[string]string  "Некорректный ID"
+// @Failure      401  {object}  map[string]string  "Неавторизован"
+// @Failure      500  {object}  map[string]string  "Внутренняя ошибка"
+// @Router       /api/task [delete]
 func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 
