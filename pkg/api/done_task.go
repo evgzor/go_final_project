@@ -18,6 +18,11 @@ import (
 // @Failure      401  {object}  map[string]string
 // @Router       /api/tasks [get]
 func DoneTaskHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.Header().Set("Allow", "POST")
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 	id := r.URL.Query().Get("id")
 
 	if id == "" {

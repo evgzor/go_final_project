@@ -21,6 +21,11 @@ import (
 // @Failure      500  {object}  map[string]string  "Внутренняя ошибка"
 // @Router       /api/task [delete]
 func DeleteTaskHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		writeJsonError(w, errors.New("Only Delete supports"))
+		return
+	}
 	id := r.URL.Query().Get("id")
 
 	if id == "" {

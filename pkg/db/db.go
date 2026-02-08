@@ -22,6 +22,8 @@ CREATE INDEX IF NOT EXISTS idx_scheduler_date
 ON scheduler(date);
 `
 
+const defaultDateFormat = "20060102"
+
 func detect(path string) string {
 	if v := os.Getenv("TODO_DBFILE"); v != "" {
 		return v

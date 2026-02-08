@@ -4,5 +4,5 @@ services:
     container_name: go-final-app
     platform: linux/amd64
     ports:
-      - "7540:7540"
+      - "${TODO_PORT:-7540}:${TODO_PORT:-7540}"
     restart: unless-stopped

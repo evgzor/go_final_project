@@ -22,7 +22,6 @@ import (
 // @Failure      500  {object}  map[string]string  "Внутренняя ошибка"
 // @Router       /api/task [get]
 func GetTaskHandler(w http.ResponseWriter, r *http.Request) {
-
 	if r.Method != http.MethodGet {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		writeJsonError(w, errors.New("Only Get supports"))

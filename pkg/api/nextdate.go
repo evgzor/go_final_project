@@ -45,7 +45,7 @@ func lastDayOfMonth(t time.Time) int {
 //	дату в формате YYYYMMDD или ошибку
 func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 
-	date, err := time.Parse("20060102", dstart)
+	date, err := time.Parse(defaultDateFormat, dstart)
 
 	if err != nil {
 		return "", err
@@ -103,7 +103,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 			}
 
 			if week[weekday] {
-				return date.Format("20060102"), nil
+				return date.Format(defaultDateFormat), nil
 			}
 		}
 	case 'm':
@@ -175,7 +175,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 			resultDay := day[dayCheck] || (isLastDay && date.Day() == lastDayOfMonthCheck) || (isPreLast && date.Day() == lastDayOfMonthCheck-1)
 
 			if resultDay && month[monthCheck] {
-				return date.Format("20060102"), nil
+				return date.Format(defaultDateFormat), nil
 			}
 		}
 
@@ -189,7 +189,7 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 		}
 	}
 
-	resultDate := date.Format("20060102")
+	resultDate := date.Format(defaultDateFormat)
 
 	return resultDate, nil
 }
@@ -203,11 +203,17 @@ func NextDate(now time.Time, dstart string, repeat string) (string, error) {
 // @Failure      400  {object}  map[string]string
 // @Router       /api/nextdate [get]
 func nextDayHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		writeJsonError(w, errors.New("Only Get supports"))
+		return
+	}
+
 	now := r.URL.Query().Get("now")
 	var nowDate time.Time
 	var err error
 	if len(now) != 0 {
-		nowDate, err = time.Parse("20060102", now)
+		nowDate, err = time.Parse(defaultDateFormat, now)
 		if err != nil {
 			http.Error(w, "invalid 'now' date format, expected YYYYMMDD", http.StatusBadRequest)
 			return

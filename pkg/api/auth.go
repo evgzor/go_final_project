@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -29,11 +28,12 @@ type Claims struct {
 
 const TODO_PASSWORD = "TODO_PASSWORD"
 
+var passwordEnv string
+
 func auth(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// смотрим наличие пароля
-		pass := os.Getenv(TODO_PASSWORD)
-		if len(pass) > 0 {
+
+		if len(passwordEnv) > 0 {
 			var jwtCoockie string // JWT-токен из куки
 			// получаем куку
 			cookie, err := r.Cookie("token")
@@ -53,7 +53,7 @@ func auth(next http.HandlerFunc) http.HandlerFunc {
 					if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 						return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 					}
-					return []byte(pass), nil
+					return []byte(passwordEnv), nil
 				})
 			if err != nil {
 				w.WriteHeader(http.StatusUnauthorized)
@@ -68,7 +68,7 @@ func auth(next http.HandlerFunc) http.HandlerFunc {
 			}
 
 			if claims, ok := token.Claims.(*Claims); ok {
-				currentHash := sha256.Sum256([]byte(pass))
+				currentHash := sha256.Sum256([]byte(passwordEnv))
 				currentHashStr := hex.EncodeToString(currentHash[:])
 
 				if claims.Hash != currentHashStr {
@@ -103,7 +103,6 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 
-	passwordEnv := os.Getenv(TODO_PASSWORD)
 	if passwordEnv != "" {
 		var token Token
 		if passwordEnv != password.Password {

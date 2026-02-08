@@ -119,7 +119,7 @@ func Tasks(limit int) ([]*Task, error) {
 func SearchByStringTasks(search string, limit int) ([]*Task, error) {
 	searchPattern := "%" + search + "%"
 
-	query := `SELECT * FROM scheduler WHERE title LIKE :search OR comment LIKE :search ORDER BY date LIMIT :limit`
+	query := `SELECT id, date, title, comment, repeat FROM scheduler WHERE title LIKE :search OR comment LIKE :search ORDER BY date LIMIT :limit`
 
 	rows, err := db.Query(query, sql.Named("search", searchPattern), sql.Named("limit", limit))
 
@@ -137,13 +137,13 @@ func SearchByStringTasks(search string, limit int) ([]*Task, error) {
 // date должен быть в формате YYYYMMDD.
 func SearchByDateTasks(date string, limit int) ([]*Task, error) {
 
-	_, err := time.Parse("20060102", date)
+	_, err := time.Parse(defaultDateFormat, date)
 
 	if err != nil {
 		return nil, err
 	}
 
-	query := `SELECT * FROM scheduler WHERE date = :date ORDER BY date LIMIT :limit`
+	query := `SELECT id, date, title, comment, repeat FROM scheduler WHERE date = :date ORDER BY date LIMIT :limit`
 
 	rows, err := db.Query(query, sql.Named("date", date), sql.Named("limit", limit))
 	if err != nil {

@@ -23,6 +23,11 @@ import (
 // @Failure      400   {object}  map[string]string  "Ошибка валидации или запроса"
 // @Router       /tasks [post]
 func addTaskHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		writeJsonError(w, errors.New("Only Post supports"))
+		return
+	}
 	var task db.Task
 	var buf bytes.Buffer
 
@@ -46,14 +51,14 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := checkDate(&task); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusNotAcceptable)
 		writeJsonError(w, err)
 		return
 	}
 
 	idTask, err := db.AddTask(&task)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusInternalServerError)
 		writeJsonError(w, err)
 		return
 	}
@@ -67,16 +72,16 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 func checkDate(task *db.Task) error {
 	now := time.Now()
 
-	if task.Date == now.Format("20060102") {
+	if task.Date == now.Format(defaultDateFormat) {
 		return nil
 	}
 
 	if task.Date == "" {
-		task.Date = now.Format("20060102")
+		task.Date = now.Format(defaultDateFormat)
 		return nil
 	}
 
-	t, err := time.Parse("20060102", task.Date)
+	t, err := time.Parse(defaultDateFormat, task.Date)
 	if err != nil {
 		return fmt.Errorf("invalid date format")
 	}
@@ -92,7 +97,7 @@ func checkDate(task *db.Task) error {
 		}
 	} else {
 		if afterNow(now, t) {
-			task.Date = now.Format("20060102")
+			task.Date = now.Format(defaultDateFormat)
 		}
 	}
 

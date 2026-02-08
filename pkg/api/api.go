@@ -3,7 +3,10 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"os"
 )
+
+const defaultDateFormat = "20060102"
 
 // Init инициализирует HTTP-роуты API
 //
@@ -20,15 +23,16 @@ func Init() {
 	http.HandleFunc("/api/tasks", auth(tasksHandler))
 	http.HandleFunc("/api/task/done", auth(DoneTaskHandler))
 	http.HandleFunc("/api/signin", authHandler)
+	passwordEnv = os.Getenv(TODO_PASSWORD)
 }
 
 func writeJson(w http.ResponseWriter, data any) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	resp, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Write(resp)
 }
 

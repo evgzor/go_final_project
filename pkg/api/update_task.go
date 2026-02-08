@@ -27,6 +27,11 @@ import (
 // @Failure      500   {object}  map[string]string  "Внутренняя ошибка"
 // @Router       /api/task [put]
 func UpdateTaskHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		writeJsonError(w, errors.New("Only Put supports"))
+		return
+	}
 
 	var task db.Task
 	var buf bytes.Buffer
@@ -102,7 +107,7 @@ func validate(task db.Task) error {
 		}
 	}
 
-	_, err := time.Parse("20060102", task.Date)
+	_, err := time.Parse(defaultDateFormat, task.Date)
 	if err != nil {
 		return errors.New("Date is wrong format")
 	}

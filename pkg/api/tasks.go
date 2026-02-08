@@ -12,6 +12,8 @@ type TasksResp struct {
 	Tasks []*db.Task `json:"tasks"`
 }
 
+const maxLimitRecords = 50
+
 // tasksHandler godoc
 // @Summary      Получить список задач
 // @Tags         tasks
@@ -32,7 +34,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch {
 	case search == "":
-		tasks, err := db.Tasks(50) // в параметре максимальное количество записей
+		tasks, err := db.Tasks(maxLimitRecords) // в параметре максимальное количество записей
 		if err != nil {
 			writeJsonError(w, err)
 			return
@@ -46,7 +48,7 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 			writeJsonError(w, err)
 			return
 		}
-		date := t.Format("20060102")
+		date := t.Format(defaultDateFormat)
 		tasks, err := db.SearchByDateTasks(date, 50)
 		if err != nil {
 			writeJsonError(w, err)

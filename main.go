@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const DB_FILE_NAME = "scheduler.db"
+const dbFileName = "scheduler.db"
 
 func main() {
 	err := godotenv.Load()
@@ -16,13 +16,11 @@ func main() {
 		fmt.Println(err)
 	}
 
-	err = db.Init(DB_FILE_NAME)
+	err = db.Init(dbFileName)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
 	}
-
-	server.Run()
-
 	defer db.CloseDb()
+	server.Run()
 }
