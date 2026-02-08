@@ -1,0 +1,8 @@
+services:
+  go-app:
+    image: evgzor/go_final_project:v1.0.0
+    container_name: go-final-app
+    platform: linux/amd64
+    ports:
+      - "${TODO_PORT:-7540}:${TODO_PORT:-7540}"
+    restart: unless-stopped
